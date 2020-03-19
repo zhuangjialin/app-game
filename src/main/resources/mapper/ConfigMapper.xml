@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.ConfigMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.Config">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="is_show" jdbcType="INTEGER" property="isShow" />
+    <result column="param1" jdbcType="VARCHAR" property="param1" />
+    <result column="param2" jdbcType="VARCHAR" property="param2" />
+    <result column="param3" jdbcType="VARCHAR" property="param3" />
+    <result column="param4" jdbcType="VARCHAR" property="param4" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="unit_id" jdbcType="VARCHAR" property="unitId" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="is_box" jdbcType="INTEGER" property="isBox" />
+
+    <result column="visitPv" jdbcType="VARCHAR" property="visitPv" />
+    <result column="visitUvNew" jdbcType="VARCHAR" property="visitUvNew" />
+    <result column="allVisitUvNew" jdbcType="VARCHAR" property="allVisitUvNew" />
+    <result column="pv" jdbcType="VARCHAR" property="pv" />
+    <result column="uv" jdbcType="VARCHAR" property="uv" />
+
+    <result column="is_batch" jdbcType="INTEGER" property="isBatch" />
+
+
+
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, is_show, param1, param2, param3, param4, app_id,unit_id,description,title,is_box  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+
+  <select id="findConfigByVisit" parameterType="com.sdys.appgame.entity.Config" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from config
+    where param4 !=''
+  </select>
+
+
+
+
+
+  <select id="getConfigList" parameterType="com.sdys.appgame.entity.Config" resultMap="BaseResultMap">
+<!--    select
+    <include refid="Base_Column_List" />
+    from config-->
+
+
+    SELECT
+    a.*,
+    t.visit_pv AS visitPv,
+    t.visit_uv_new visitUvNew,
+    tt.allVisitUvNew ,
+    ttt.uv,
+    ttt.pv
+    FROM
+    config a
+    LEFT JOIN
+    (SELECT
+    visit_pv,
+    visit_uv_new,
+    config_id
+    FROM
+    daily_visit_trend
+    WHERE ref_date = DATE_SUB(CURDATE(),INTERVAL 1 DAY) ) t
+    ON a.id = t.config_id
+    LEFT JOIN
+    (SELECT
+    config_id,
+    SUM(visit_uv_new) AS allVisitUvNew
+    FROM
+    daily_visit_trend
+    GROUP BY config_id) tt
+    ON tt.config_id = a.id
+    LEFT JOIN ( SELECT `create_time`,`pv`,`uv`,`app_id` FROM `uv_pv_record` WHERE create_time = STR_TO_DATE(NOW(),'%Y-%m-%d') ) ttt
+    ON ttt.app_id = a.app_id
+    <where>
+      <if test="isShow != null">
+        AND a.is_show = #{isShow,jdbcType=INTEGER}
+      </if>
+      <if test="param1 != null">
+        AND a.param1 = #{param1,jdbcType=VARCHAR}
+      </if>
+      <if test="param2 != null">
+        AND a.param2 = #{param2,jdbcType=VARCHAR}
+      </if>
+      <if test="param3 != null">
+        AND a.param3 = #{param3,jdbcType=VARCHAR}
+      </if>
+      <if test="param4 != null">
+        AND a.param4 = #{param4,jdbcType=VARCHAR}
+      </if>
+      <if test="appId != null and appId !=''">
+        AND a.app_id = #{appId,jdbcType=VARCHAR}
+      </if>
+      <if test="unitId != null and unitId !=''">
+        AND a.unit_id = #{unitId,jdbcType=VARCHAR}
+      </if>
+      <if test="isBox != null and isBox !=''">
+        AND a.is_box = #{isBox,jdbcType=INTEGER}
+      </if>
+      <if test="description != null">
+        AND a.description = #{description,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null">
+        AND a.title LIKE  CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+      </if>
+    </where>
+    ORDER BY t.visit_uv_new DESC ,t.visit_pv DESC
+  </select>
+
+  <select id="selectByParam" parameterType="com.sdys.appgame.entity.Config" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from config
+    <where>
+      <if test="isShow != null">
+         is_show = #{isShow,jdbcType=INTEGER}
+      </if>
+      <if test="param1 != null">
+        AND param1 = #{param1,jdbcType=VARCHAR}
+      </if>
+      <if test="param2 != null">
+        AND param2 = #{param2,jdbcType=VARCHAR}
+      </if>
+      <if test="param3 != null">
+        AND param3 = #{param3,jdbcType=VARCHAR}
+      </if>
+      <if test="param4 != null">
+        AND param4 = #{param4,jdbcType=VARCHAR}
+      </if>
+      <if test="appId != null">
+        AND app_id = #{appId,jdbcType=VARCHAR}
+      </if>
+      <if test="unitId != null and unitId !=''">
+        AND unit_id = #{unitId,jdbcType=VARCHAR}
+      </if>
+      <if test="isBox != null and isBox !=''">
+        AND is_box = #{isBox,jdbcType=INTEGER}
+      </if>
+      <if test="description != null">
+        AND description = #{description,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null">
+       and title LIKE  CONCAT('%',${title,jdbcType=VARCHAR},'%')
+      </if>
+    </where>
+  </select>
+
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sdys.appgame.entity.Config">
+    insert into config (id, is_show, param1, 
+      param2, param3, param4, 
+      app_id)
+    values (#{id,jdbcType=INTEGER}, #{isShow,jdbcType=INTEGER}, #{param1,jdbcType=VARCHAR}, 
+      #{param2,jdbcType=VARCHAR}, #{param3,jdbcType=VARCHAR}, #{param4,jdbcType=VARCHAR}, 
+      #{appId,jdbcType=VARCHAR}, #{unitId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.Config">
+    insert into config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="isShow != null">
+        is_show,
+      </if>
+      <if test="param1 != null">
+        param1,
+      </if>
+      <if test="param2 != null">
+        param2,
+      </if>
+      <if test="param3 != null">
+        param3,
+      </if>
+      <if test="param4 != null">
+        param4,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="unitId != null">
+        unit_id ,
+      </if>
+      <if test="isBox != null">
+        is_box ,
+      </if>
+      <if test="title != null">
+        title ,
+      </if>
+      <if test="description != null">
+        description ,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="isShow != null">
+        #{isShow,jdbcType=INTEGER},
+      </if>
+      <if test="param1 != null">
+        #{param1,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null">
+        #{param2,jdbcType=VARCHAR},
+      </if>
+      <if test="param3 != null">
+        #{param3,jdbcType=VARCHAR},
+      </if>
+      <if test="param4 != null">
+        #{param4,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null">
+        #{unitId,jdbcType=VARCHAR},
+      </if>
+      <if test="isBox != null ">
+        #{isBox,jdbcType=INTEGER},
+      </if>
+      <if test="title != null ">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.Config">
+    update config
+    <set>
+      <if test="isShow != null">
+        is_show = #{isShow,jdbcType=INTEGER},
+      </if>
+      <if test="param1 != null">
+        param1 = #{param1,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null">
+        param2 = #{param2,jdbcType=VARCHAR},
+      </if>
+      <if test="param3 != null">
+        param3 = #{param3,jdbcType=VARCHAR},
+      </if>
+      <if test="param4 != null">
+        param4 = #{param4,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null">
+        unit_id= #{unitId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description= #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="isBox != null">
+        is_box = #{isBox,jdbcType=INTEGER},
+      </if>
+      <if test="isBatch != null">
+        is_batch = #{isBatch,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.Config">
+    update config
+    set is_show = #{isShow,jdbcType=INTEGER},
+      param1 = #{param1,jdbcType=VARCHAR},
+      param2 = #{param2,jdbcType=VARCHAR},
+      param3 = #{param3,jdbcType=VARCHAR},
+      param4 = #{param4,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <update id="batchUpdate" parameterType="integer">
+    update config
+    set is_show = #{isBatch,jdbcType=INTEGER} where is_box = 0 and is_batch = 1
+  </update>
+
+</mapper>

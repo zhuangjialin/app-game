@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.CustomerAppMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.CustomerApp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="jump_name" jdbcType="VARCHAR" property="jumpName" />
+    <result column="jump_url" jdbcType="VARCHAR" property="jumpUrl" />
+    <result column="extra_data" jdbcType="VARCHAR" property="extraData" />
+    <result column="jumpType" jdbcType="INTEGER" property="jumptype" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="click_nub" jdbcType="INTEGER" property="clickNub" />
+    <result column="banner_url" jdbcType="VARCHAR" property="bannerUrl" />
+    <result column="item_index" jdbcType="INTEGER" property="itemIndex" />
+    <result column="jump_app_id" jdbcType="VARCHAR" property="jumpAppId" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="type_value" jdbcType="VARCHAR" property="typeValue" />
+    <result column="secret_key" jdbcType="VARCHAR" property="secretKey" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="is_hide" jdbcType="INTEGER" property="isHide" />
+    <result column="is_baner" jdbcType="INTEGER" property="isBaner" />
+
+  </resultMap>
+
+
+  <resultMap id="TypeResultMap" type="com.sdys.appgame.entity.CustomerApp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="jump_name" jdbcType="VARCHAR" property="jumpName" />
+    <result column="jump_url" jdbcType="VARCHAR" property="jumpUrl" />
+    <result column="extra_data" jdbcType="VARCHAR" property="extraData" />
+    <result column="jumpType" jdbcType="INTEGER" property="jumptype" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="click_nub" jdbcType="INTEGER" property="clickNub" />
+    <result column="banner_url" jdbcType="VARCHAR" property="bannerUrl" />
+    <result column="item_index" jdbcType="INTEGER" property="itemIndex" />
+    <result column="jump_app_id" jdbcType="VARCHAR" property="jumpAppId" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+
+  </resultMap>
+
+
+
+
+  <sql id="Base_Column_List">
+    id, jump_name, jump_url, extra_data, jumpType, introduce, logo, click_nub, banner_url, 
+    item_index, jump_app_id,app_id,secret_key,type_id,create_user,create_time,is_hide,is_baner
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    id,
+    jump_name,
+    jump_url,
+    extra_data,
+    jumpType,
+    introduce,
+    logo,
+    click_nub,
+    banner_url,
+    item_index,
+    jump_app_id,
+    app_id,
+    (SELECT param4 FROM `config` WHERE app_id = customer_app.app_id) AS secret_key,
+    type_id,
+    create_user,
+    create_time,
+    is_hide,
+    is_baner
+    from customer_app
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="findByParams" parameterType="com.sdys.appgame.entity.CustomerApp" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from customer_app
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findByPrimaryKey" parameterType="com.sdys.appgame.entity.CustomerApp" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM customer_app
+    <where>
+      <if test="id != null">
+        AND id = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="jumpAppId != null">
+        AND jump_app_id = #{jumpAppId,jdbcType=VARCHAR}
+      </if>
+      <if test="isHide != null">
+        AND is_hide = #{isHide,jdbcType=VARCHAR}
+      </if>
+      <if test="appId != null">
+        AND app_id = #{appId,jdbcType=VARCHAR}
+      </if>
+      <if test="typeId != null">
+        AND type_id REGEXP  (#{typeId,jdbcType=VARCHAR})
+      </if>
+      <if test="jumpName != null">
+       AND jump_name Like CONCAT('%',#{jumpName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="jumpUrl != null">
+        AND jump_url = #{jumpUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="extraData != null">
+        AND extra_data = #{extraData,jdbcType=VARCHAR}
+      </if>
+      <if test="jumptype != null">
+        AND jumpType = #{jumptype,jdbcType=INTEGER}
+      </if>
+      <if test="introduce != null">
+        AND introduce = #{introduce,jdbcType=VARCHAR}
+      </if>
+      <if test="logo != null">
+        AND logo = #{logo,jdbcType=VARCHAR}
+      </if>
+      <if test="clickNub != null">
+        AND click_nub = #{clickNub,jdbcType=INTEGER}
+      </if>
+      <if test="bannerUrl != null">
+        AND banner_url = #{bannerUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="itemIndex != null">
+        AND item_index = #{itemIndex,jdbcType=INTEGER}
+      </if>
+      <if test="secretKey != null">
+        AND secret_key = #{secretKey,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by customer_app.item_index asc
+  </select>
+
+
+
+
+
+
+  <select id="advertisingStatistics" parameterType="map" resultType="map">
+SELECT
+  uv_pv_record.app_id AS appId,
+  uv_pv_record.`uv` AS uv,
+  uv_pv_record.`pv` AS pv,
+  customer_app.jump_name AS jumpName,
+  customer_app.logo AS logo,
+  customer_app.app_id AS box,
+    uv_pv_record.create_time AS createTime
+FROM
+  `uv_pv_record`
+  LEFT JOIN `customer_app`
+    ON uv_pv_record.`app_id` = customer_app.jump_app_id
+    <where>
+        <if test="createTime != null">
+        AND uv_pv_record.`create_time` = #{createTime,jdbcType=VARCHAR}
+        </if>
+        <if test="appId != null and appId != ''">
+          AND uv_pv_record.`app_id` = #{appId,jdbcType=VARCHAR}
+        </if>
+        <if test="jumpName != null and jumpName != ''">
+          AND customer_app.`jump_name` like CONCAT('%',#{jumpName,jdbcType=VARCHAR},'%')
+        </if>
+    </where>
+    order by uv_pv_record.`pv`, uv_pv_record.`uv` DESC
+  </select>
+
+
+
+
+
+  <select id="selectByParams" parameterType="com.sdys.appgame.entity.CustomerApp" resultMap="TypeResultMap">
+SELECT
+  customer_app.id,
+  customer_app.jump_name,
+  customer_app.jump_url,
+  customer_app.extra_data,
+  customer_app.jumpType,
+  customer_app.introduce,
+  customer_app.logo,
+  customer_app.click_nub,
+  customer_app.banner_url,
+  customer_app.item_index,
+  customer_app.jump_app_id,
+  customer_app.app_id,
+  customer_app.secret_key,
+  type_customer_app.type_id
+FROM
+  `type_customer_app`
+  LEFT JOIN `customer_app`
+    ON customer_app.`id` = type_customer_app.`customer_app_id`
+WHERE customer_app.`is_hide` = 1
+ORDER BY type_customer_app.`index_item` ASC
+
+  </select>
+
+
+
+  <select id="selectBannerList" parameterType="com.sdys.appgame.entity.CustomerApp" resultMap="BaseResultMap">
+SELECT `customer_app`.* FROM banner  LEFT JOIN `customer_app` ON banner.`customer_app_id` = customer_app.`id` order by banner.index_item ASC
+  </select>
+
+
+  <select id="getCustomerAppList" parameterType="com.sdys.appgame.entity.CustomerApp" resultMap="BaseResultMap">
+      SELECT
+        customer_app.*,
+        type.`type_value`
+      FROM
+        `type_customer_app`
+        LEFT JOIN `customer_app`
+          ON `customer_app_id` = customer_app.`id`
+        RIGHT JOIN `type`
+          ON `type_id` = type.`id`
+          <where>
+            <if test="appId != null">
+              customer_app.`app_id` = #{appId,jdbcType=INTEGER}
+            </if>
+            <if test="jumpName != null">
+              And customer_app.`jump_name` LIKE CONCAT("%",#{jumpName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="typeId != null">
+              And type.`id` =  #{TypeId,jdbcType=VARCHAR}
+            </if>
+          </where>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from customer_app
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sdys.appgame.entity.CustomerApp">
+    insert into customer_app (id, jump_name, jump_url, 
+      extra_data, jumpType, introduce, 
+      logo, click_nub, banner_url, 
+      item_index, jump_app_id,secret_key)
+    values (#{id,jdbcType=INTEGER}, #{jumpName,jdbcType=VARCHAR}, #{jumpUrl,jdbcType=VARCHAR}, 
+      #{extraData,jdbcType=VARCHAR}, #{jumptype,jdbcType=INTEGER}, #{introduce,jdbcType=VARCHAR}, 
+      #{logo,jdbcType=VARCHAR}, #{clickNub,jdbcType=INTEGER}, #{bannerUrl,jdbcType=VARCHAR}, 
+      #{itemIndex,jdbcType=INTEGER}, #{jumpAppId,jdbcType=VARCHAR}, #{secretKey,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.CustomerApp" useGeneratedKeys="true" keyProperty="id">
+    insert into customer_app
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="jumpName != null">
+        jump_name,
+      </if>
+      <if test="jumpUrl != null">
+        jump_url,
+      </if>
+      <if test="extraData != null">
+        extra_data,
+      </if>
+      <if test="jumptype != null">
+        jumpType,
+      </if>
+      <if test="introduce != null">
+        introduce,
+      </if>
+      <if test="logo != null">
+        logo,
+      </if>
+      <if test="clickNub != null">
+        click_nub,
+      </if>
+      <if test="bannerUrl != null">
+        banner_url,
+      </if>
+      <if test="itemIndex != null">
+        item_index,
+      </if>
+      <if test="jumpAppId != null">
+        jump_app_id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="secretKey != null">
+        secret_key,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="jumpName != null">
+        #{jumpName,jdbcType=VARCHAR},
+      </if>
+      <if test="jumpUrl != null">
+        #{jumpUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="extraData != null">
+        #{extraData,jdbcType=VARCHAR},
+      </if>
+      <if test="jumptype != null">
+        #{jumptype,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="clickNub != null">
+        #{clickNub,jdbcType=INTEGER},
+      </if>
+      <if test="bannerUrl != null">
+        #{bannerUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="itemIndex != null">
+        #{itemIndex,jdbcType=INTEGER},
+      </if>
+      <if test="jumpAppId != null">
+        #{jumpAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="secretKey != null">
+        #{secretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.CustomerApp">
+    update customer_app
+    <set>
+      <if test="jumpName != null">
+        jump_name = #{jumpName,jdbcType=VARCHAR},
+      </if>
+      <if test="jumpUrl != null">
+        jump_url = #{jumpUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isHide != null">
+        is_hide = #{isHide,jdbcType=VARCHAR},
+      </if>
+      <if test="extraData != null">
+        extra_data = #{extraData,jdbcType=VARCHAR},
+      </if>
+      <if test="jumptype != null">
+        jumpType = #{jumptype,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="clickNub != null">
+        click_nub = #{clickNub,jdbcType=INTEGER},
+      </if>
+      <if test="bannerUrl != null">
+        banner_url = #{bannerUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="itemIndex != null">
+        item_index = #{itemIndex,jdbcType=INTEGER},
+      </if>
+      <if test="jumpAppId != null">
+        jump_app_id = #{jumpAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="secretKey != null">
+        secret_key = #{secretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="isBaner != null">
+        is_baner = #{isBaner,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.CustomerApp">
+    update customer_app
+    set jump_name = #{jumpName,jdbcType=VARCHAR},
+      jump_url = #{jumpUrl,jdbcType=VARCHAR},
+      extra_data = #{extraData,jdbcType=VARCHAR},
+      jumpType = #{jumptype,jdbcType=INTEGER},
+      introduce = #{introduce,jdbcType=VARCHAR},
+      logo = #{logo,jdbcType=VARCHAR},
+      click_nub = #{clickNub,jdbcType=INTEGER},
+      banner_url = #{bannerUrl,jdbcType=VARCHAR},
+      item_index = #{itemIndex,jdbcType=INTEGER},
+      jump_app_id = #{jumpAppId,jdbcType=VARCHAR},
+      secret_key = #{secretKey,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.DailyVisitTrendMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.DailyVisitTrend">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ghid" jdbcType="VARCHAR" property="ghid" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="ref_date" jdbcType="VARCHAR" property="refDate" />
+    <result column="session_cnt" jdbcType="INTEGER" property="sessionCnt" />
+    <result column="visit_pv" jdbcType="INTEGER" property="visitPv" />
+    <result column="visit_uv" jdbcType="INTEGER" property="visitUv" />
+    <result column="visit_uv_new" jdbcType="INTEGER" property="visitUvNew" />
+    <result column="stay_time_uv" jdbcType="DECIMAL" property="stayTimeUv" />
+    <result column="stay_time_session" jdbcType="DECIMAL" property="stayTimeSession" />
+    <result column="visit_depth" jdbcType="DECIMAL" property="visitDepth" />
+    <result column="config_id" jdbcType="INTEGER" property="configId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List">
+     id,
+    ghid,
+    appid,
+    ref_date,
+    session_cnt,
+    visit_pv,
+    visit_uv,
+    visit_uv_new,
+    stay_time_uv,
+    stay_time_session,
+    visit_depth,
+    config_id,
+    create_time
+  </sql>
+
+
+  <select id="findById" parameterType="integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from daily_visit_trend
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+<select id="booleanIsExist" parameterType="com.sdys.appgame.entity.DailyVisitTrend" resultType="integer">
+  select
+  count(1)
+  from daily_visit_trend
+  where ref_date =  #{refDate,jdbcType=VARCHAR}
+  and appid = #{appid,jdbcType=VARCHAR}
+</select>
+
+  <select id="findDailyVisitTrend" parameterType="map" resultType="map">
+        SELECT a.title,b.* FROM `config` a RIGHT JOIN `daily_visit_trend` b ON a.id = b.`config_id`
+
+        <where>
+          <if test="appId != null and appId !=''">
+            AND a.app_id =  #{appId,jdbcType=VARCHAR}
+          </if>
+          <if test="refDate != null and refDate !=''">
+            AND b.`ref_date` =  #{refDate,jdbcType=VARCHAR}
+          </if>
+        </where>
+    order by b.ref_date desc
+  </select>
+
+
+
+  <select id="getAllCountData" parameterType="map" resultType="map">
+    SELECT IFNULL(SUM(visit_uv_new),0) AS allVisitUvNew,IFNULL(SUM(visit_pv),0) AS allVisitPv FROM daily_visit_trend WHERE ref_date = #{refDate,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="findByParams" parameterType="com.sdys.appgame.entity.DailyVisitTrend" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from daily_visit_trend
+    <where>
+      <if test="id != null">
+       AND id =  #{id,jdbcType=INTEGER}
+      </if>
+      <if test="ghid != null">
+        AND ghid =   #{ghid,jdbcType=VARCHAR}
+      </if>
+      <if test="appid != null">
+        AND appid =   #{appid,jdbcType=VARCHAR}
+      </if>
+      <if test="refDate != null">
+        AND ref_date =  #{refDate,jdbcType=VARCHAR}
+      </if>
+      <if test="sessionCnt != null">
+        AND session_cnt =    #{sessionCnt,jdbcType=INTEGER}
+      </if>
+      <if test="visitPv != null">
+        AND visit_pv =    #{visitPv,jdbcType=INTEGER}
+      </if>
+      <if test="visitUv != null">
+        AND visit_uv =   #{visitUv,jdbcType=INTEGER}
+      </if>
+      <if test="visitUvNew != null">
+        AND visit_uv_new =   #{visitUvNew,jdbcType=INTEGER}
+      </if>
+      <if test="stayTimeUv != null">
+        AND stay_time_uv =    #{stayTimeUv,jdbcType=DECIMAL}
+      </if>
+      <if test="stayTimeSession != null">
+        AND stay_time_session =    #{stayTimeSession,jdbcType=DECIMAL}
+      </if>
+      <if test="visitDepth != null">
+        AND visit_depth =   #{visitDepth,jdbcType=DECIMAL}
+      </if>
+      <if test="configId != null">
+        AND config_id    #{configId,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+        AND create_time =    #{createTime,jdbcType=TIMESTAMP}
+      </if>
+
+    </where>
+
+
+  </select>
+
+
+  <insert id="insert" parameterType="com.sdys.appgame.entity.DailyVisitTrend">
+    insert into daily_visit_trend (id, ghid, appid, 
+      ref_date, session_cnt, visit_pv, 
+      visit_uv, visit_uv_new, stay_time_uv, 
+      stay_time_session, visit_depth, config_id, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{ghid,jdbcType=VARCHAR}, #{appid,jdbcType=VARCHAR}, 
+      #{refDate,jdbcType=VARCHAR}, #{sessionCnt,jdbcType=INTEGER}, #{visitPv,jdbcType=INTEGER}, 
+      #{visitUv,jdbcType=INTEGER}, #{visitUvNew,jdbcType=INTEGER}, #{stayTimeUv,jdbcType=INTEGER}, 
+      #{stayTimeSession,jdbcType=INTEGER}, #{visitDepth,jdbcType=INTEGER}, #{configId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.DailyVisitTrend">
+    insert into daily_visit_trend
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ghid != null">
+        ghid,
+      </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="refDate != null">
+        ref_date,
+      </if>
+      <if test="sessionCnt != null">
+        session_cnt,
+      </if>
+      <if test="visitPv != null">
+        visit_pv,
+      </if>
+      <if test="visitUv != null">
+        visit_uv,
+      </if>
+      <if test="visitUvNew != null">
+        visit_uv_new,
+      </if>
+      <if test="stayTimeUv != null">
+        stay_time_uv,
+      </if>
+      <if test="stayTimeSession != null">
+        stay_time_session,
+      </if>
+      <if test="visitDepth != null">
+        visit_depth,
+      </if>
+      <if test="configId != null">
+        config_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ghid != null">
+        #{ghid,jdbcType=VARCHAR},
+      </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="refDate != null">
+        #{refDate,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionCnt != null">
+        #{sessionCnt,jdbcType=INTEGER},
+      </if>
+      <if test="visitPv != null">
+        #{visitPv,jdbcType=INTEGER},
+      </if>
+      <if test="visitUv != null">
+        #{visitUv,jdbcType=INTEGER},
+      </if>
+      <if test="visitUvNew != null">
+        #{visitUvNew,jdbcType=INTEGER},
+      </if>
+      <if test="stayTimeUv != null">
+        #{stayTimeUv,jdbcType=DECIMAL},
+      </if>
+      <if test="stayTimeSession != null">
+        #{stayTimeSession,jdbcType=DECIMAL},
+      </if>
+      <if test="visitDepth != null">
+        #{visitDepth,jdbcType=DECIMAL},
+      </if>
+      <if test="configId != null">
+        #{configId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.DailyVisitTrend">
+    update daily_visit_trend
+    <set>
+    <if test="ghid != null">
+       ghid =   #{ghid,jdbcType=VARCHAR},
+    </if>
+    <if test="sessionCnt != null">
+      session_cnt =    #{sessionCnt,jdbcType=INTEGER},
+    </if>
+    <if test="visitPv != null">
+      visit_pv =    #{visitPv,jdbcType=INTEGER},
+    </if>
+    <if test="visitUv != null">
+      visit_uv =   #{visitUv,jdbcType=INTEGER},
+    </if>
+    <if test="visitUvNew != null">
+      visit_uv_new =   #{visitUvNew,jdbcType=INTEGER},
+    </if>
+    <if test="stayTimeUv != null">
+      stay_time_uv =    #{stayTimeUv,jdbcType=DECIMAL},
+    </if>
+    <if test="stayTimeSession != null">
+      stay_time_session =    #{stayTimeSession,jdbcType=DECIMAL},
+    </if>
+    <if test="visitDepth != null">
+      visit_depth =   #{visitDepth,jdbcType=DECIMAL},
+    </if>
+    <if test="createTime != null">
+      create_time =    #{createTime,jdbcType=TIMESTAMP},
+    </if>
+   </set>
+    where
+    config_id = #{configId,jdbcType=INTEGER}
+    and ref_date =  #{refDate,jdbcType=VARCHAR}
+
+  </update>
+</mapper>

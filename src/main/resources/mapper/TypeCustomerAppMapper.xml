@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.TypeCustomerAppMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.TypeCustomerApp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="customer_app_id" jdbcType="INTEGER" property="customerAppId" />
+    <result column="index_item" jdbcType="INTEGER" property="indexItem" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type_id, customer_app_id,index_item
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from type_customer_app
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+
+
+
+
+  <select id="selectListByPrimary" parameterType="com.sdys.appgame.entity.TypeCustomerApp" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_customer_app
+    <where>
+      <if test="customerAppId != null">
+        and customer_app_id = #{customerAppId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+
+
+
+  <select id="selectCountByParam" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    count(1)
+    from type_customer_app
+    <where>
+        <if test="typeId != null">
+          type_id = #{typeId,jdbcType=INTEGER}
+        </if>
+        <if test="customerAppId != null">
+          and customer_app_id = #{customerAppId,jdbcType=INTEGER}
+        </if>
+    </where>
+  </select>
+
+
+  <select id="getMaxIndexItem" parameterType="java.lang.Integer" resultType="int">
+    SELECT MAX(index_item) FROM type_customer_app WHERE type_id =  #{typeId,jdbcType=INTEGER}
+  </select>
+
+
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from type_customer_app
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <delete id="deleteByParam" parameterType="com.sdys.appgame.entity.TypeCustomerApp">
+    delete from type_customer_app
+    where customer_app_id = #{customerAppId,jdbcType=INTEGER}
+  </delete>
+
+
+    <delete id="deleteCondition" parameterType="map">
+    DELETE FROM `type_customer_app` WHERE customer_app_id = #{customerAppId,jdbcType=INTEGER}
+        <if test="typeIdArray != null">
+            AND type_id NOT IN
+            <foreach item="typeId" collection="typeIdArray" open="(" separator="," close=")">
+                #{typeId}
+            </foreach>
+        </if>
+  </delete>
+
+
+
+  <insert id="insert" parameterType="com.sdys.appgame.entity.TypeCustomerApp">
+    insert into type_customer_app (id, type_id, customer_app_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, #{customerAppId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.TypeCustomerApp">
+    insert into type_customer_app
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="customerAppId != null">
+        customer_app_id,
+      </if>
+      <if test="indexItem != null">
+        index_item,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="customerAppId != null">
+        #{customerAppId,jdbcType=INTEGER},
+      </if>
+      <if test="indexItem != null">
+        #{indexItem,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.TypeCustomerApp">
+    update type_customer_app
+    <set>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="customerAppId != null">
+        customer_app_id = #{customerAppId,jdbcType=INTEGER},
+      </if>
+      <if test="indexItem != null">
+        index_item = #{indexItem,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.TypeCustomerApp">
+    update type_customer_app
+    set type_id = #{typeId,jdbcType=INTEGER},
+      customer_app_id = #{customerAppId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="selectCustomerType"  resultType="map">
+     SELECT
+    type_customer_app.`customer_app_id`,
+    type.type_value
+    FROM
+      `type_customer_app`
+      LEFT JOIN `type`
+        ON type.id = type_customer_app.`type_id`
+  </select>
+
+
+
+</mapper>

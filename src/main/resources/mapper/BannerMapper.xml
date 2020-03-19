@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.BannerMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.Banner">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="customer_app_id" jdbcType="INTEGER" property="customerAppId" />
+    <result column="index_item" jdbcType="INTEGER" property="indexItem" />
+
+
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_app_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from banner
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectByparam" parameterType="com.sdys.appgame.entity.Banner" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from banner
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from banner
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByParms" parameterType="com.sdys.appgame.entity.Banner">
+    delete from banner
+    <where>
+      <if test="customerAppId != null">
+       AND customer_app_id = #{customerAppId,jdbcType=INTEGER}
+      </if>
+      <if test="id != null">
+        AND id = #{id,jdbcType=INTEGER}
+      </if>
+    </where>
+  </delete>
+
+
+  <insert id="insert" parameterType="com.sdys.appgame.entity.Banner">
+    insert into banner (customer_app_id,index_item)
+    values ( #{customerAppId,jdbcType=INTEGER},CASE WHEN ISNULL(MAX(index_item)) THEN 0 ELSE MAX(index_item)+1 END)
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.Banner">
+    insert into banner
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerAppId != null">
+        customer_app_id,
+      </if>
+      <if test="indexItem != null">
+        index_item,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customerAppId != null">
+          #{customerAppId,jdbcType=INTEGER},
+      </if>
+      <if test="indexItem != null">
+        #{indexItem,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.Banner">
+    update banner
+    <set>
+      <if test="customerAppId != null">
+        customer_app_id = #{customerAppId,jdbcType=INTEGER},
+      </if>
+      <if test="indexItem != null">
+        index_item = #{indexItem,jdbcType=INTEGER},
+      </if>
+    </set>
+    <where>
+      <if test="id != null">
+       and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="customerAppId != null">
+        and  customer_app_id = #{customerAppId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.Banner">
+    update banner
+    set customer_app_id = #{customerAppId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="getBanerList" parameterType="map" resultType="map">
+   SELECT
+    banner.`id` AS bannerId,
+    banner.`index_item` AS indexItem,
+    customer_app.`id` AS customerAppId ,
+      customer_app.`banner_url` AS bannerUrl,
+  customer_app.`jump_name` AS jumpName
+    FROM
+    `banner`
+    LEFT JOIN `customer_app`
+    ON customer_app.id = banner.`customer_app_id`
+    order by banner.`index_item` asc
+  </select>
+
+
+</mapper>

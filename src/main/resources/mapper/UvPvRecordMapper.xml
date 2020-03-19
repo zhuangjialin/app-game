@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.UvPvRecordMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.UvPvRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="cutomer_id" jdbcType="INTEGER" property="cutomerId" />
+    <result column="uv" jdbcType="INTEGER" property="uv" />
+    <result column="pv" jdbcType="INTEGER" property="pv" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, app_id, cutomer_id, uv, pv, create_time, update_time, begin_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from uv_pv_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+
+
+
+  <select id="selectListByParams" parameterType="com.sdys.appgame.entity.UvPvRecord" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from uv_pv_record
+    <where>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR}
+      </if>
+      <if test="cutomerId != null">
+        AND cutomer_id = #{cutomerId,jdbcType=INTEGER}
+      </if>
+      <if test="uv != null">
+        AND uv = #{uv,jdbcType=INTEGER}
+      </if>
+      <if test="pv != null">
+        AND pv = #{pv,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+        AND create_time = #{createTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null">
+        AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+
+    </where>
+  </select>
+
+
+
+  <select id="selectByParams" parameterType="com.sdys.appgame.entity.UvPvRecord" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from uv_pv_record
+    <where>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR}
+      </if>
+      <if test="cutomerId != null">
+        AND cutomer_id = #{cutomerId,jdbcType=INTEGER}
+      </if>
+      <if test="uv != null">
+        AND uv = #{uv,jdbcType=INTEGER}
+      </if>
+      <if test="pv != null">
+        AND pv = #{pv,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+        AND create_time = #{createTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null">
+        AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+
+    </where>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from uv_pv_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sdys.appgame.entity.UvPvRecord">
+    insert into uv_pv_record (id, app_id, cutomer_id, 
+      uv, pv, create_time, 
+      update_time, begin_time)
+    values (#{id,jdbcType=INTEGER}, #{appId,jdbcType=VARCHAR}, #{cutomerId,jdbcType=INTEGER}, 
+      #{uv,jdbcType=INTEGER}, #{pv,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{beginTime,jdbcType=TIMESTAMP})
+  </insert>
+
+
+
+  <select id="booleanIsExist" parameterType="com.sdys.appgame.entity.UvPvRecord" resultMap="BaseResultMap">
+    SELECT COUNT(1) FROM `uv_pv_record`
+    WHERE uv_pv_record.`app_id` = app_id = #{appId,jdbcType=VARCHAR}
+    AND uv_pv_record.`create_time` = #{createTime,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.UvPvRecord" useGeneratedKeys="true" keyProperty="id">
+    insert into uv_pv_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="cutomerId != null">
+        cutomer_id,
+      </if>
+      <if test="uv != null">
+        uv,
+      </if>
+      <if test="pv != null">
+        pv,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="cutomerId != null">
+        #{cutomerId,jdbcType=INTEGER},
+      </if>
+      <if test="uv != null">
+        #{uv,jdbcType=INTEGER},
+      </if>
+      <if test="pv != null">
+        #{pv,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.UvPvRecord">
+    update uv_pv_record
+    <set>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="cutomerId != null">
+        cutomer_id = #{cutomerId,jdbcType=INTEGER},
+      </if>
+      <if test="uv != null">
+        uv = #{uv,jdbcType=INTEGER},
+      </if>
+      <if test="pv != null">
+        pv = #{pv,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.UvPvRecord">
+    update uv_pv_record
+    set app_id = #{appId,jdbcType=VARCHAR},
+      cutomer_id = #{cutomerId,jdbcType=INTEGER},
+      uv = #{uv,jdbcType=INTEGER},
+      pv = #{pv,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: applet-promote
+  datasource:
+    url: jdbc:mysql://localhost:3306/app-game?useUnicode=true&characterEncoding=UTF8
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+#  rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: guest
+#    password: guest
+#    publisher-confirms: true
+#    virtual-host: /
+
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+
+
+xcxShare:
+  shareTitle: 超火爆微信小游戏，你想玩的我们都有~"
+  shareImg: http://xcxcname.szvi-bo.com/1539423325595微信图片_20181013173458.png
+
+# 打印sql
+logging:
+  level:
+    com.sdys.appgame.mapper : debug
+server:
+  port: 8088
+
+# pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+imageUrl: http://image.eecup.cn/icon
+banerUrl: http://image.eecup.cn/banner

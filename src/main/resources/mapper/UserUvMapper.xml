@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.UserUvMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.UserUv">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="uv" jdbcType="INTEGER" property="uv" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, app_id, uv, ip, create_time, update_time, begin_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_uv
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="booleanIsExist" parameterType="com.sdys.appgame.entity.UserUv" resultType="java.lang.Integer">
+
+SELECT COUNT(1) FROM `user_uv`
+WHERE user_uv.`app_id` =  #{appId,jdbcType=VARCHAR}
+AND user_uv.`create_time` = #{createTime,jdbcType=VARCHAR}
+AND user_uv.`ip` = #{ip,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_uv
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sdys.appgame.entity.UserUv">
+    insert into user_uv (id, app_id, uv, 
+      ip, create_time, update_time, 
+      begin_time)
+    values (#{id,jdbcType=INTEGER}, #{appId,jdbcType=VARCHAR}, #{uv,jdbcType=INTEGER}, 
+      #{ip,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{beginTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.UserUv">
+    insert into user_uv
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="uv != null">
+        uv,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="uv != null">
+        #{uv,jdbcType=INTEGER},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.UserUv">
+    update user_uv
+    <set>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="uv != null">
+        uv = #{uv,jdbcType=INTEGER},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.UserUv">
+    update user_uv
+    set app_id = #{appId,jdbcType=VARCHAR},
+      uv = #{uv,jdbcType=INTEGER},
+      ip = #{ip,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

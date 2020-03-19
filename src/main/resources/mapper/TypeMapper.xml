@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdys.appgame.mapper.TypeMapper">
+  <resultMap id="BaseResultMap" type="com.sdys.appgame.entity.Type">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type_value" jdbcType="VARCHAR" property="typeValue" />
+    <result column="type_logo" jdbcType="VARCHAR" property="typeLogo" />
+    <result column="show_type" jdbcType="INTEGER" property="showType" />
+    <result column="is_hide" jdbcType="INTEGER" property="isHide" />
+    <result column="serial_number" jdbcType="INTEGER" property="serialNumber" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type_value, type_logo, show_type,is_hide,serial_number
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectByParam" parameterType="com.sdys.appgame.entity.Type" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type
+    <where>
+      <if test="isHide != null">
+       AND is_hide =  #{isHide,jdbcType=INTEGER}
+      </if>
+    </where>
+    ORDER BY serial_number ASC
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+
+  <delete id="deleteType" parameterType="java.lang.Integer">
+    DELETE FROM `type_customer_app` WHERE type_customer_app.`type_id` = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+
+  <insert id="insert" parameterType="com.sdys.appgame.entity.Type">
+    insert into type (id, type_value, type_logo, 
+      show_type)
+    values (#{id,jdbcType=INTEGER}, #{typeValue,jdbcType=VARCHAR}, #{typeLogo,jdbcType=VARCHAR}, 
+      #{showType,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sdys.appgame.entity.Type">
+    insert into type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="typeValue != null">
+        type_value,
+      </if>
+      <if test="typeLogo != null">
+        type_logo,
+      </if>
+      <if test="showType != null">
+        show_type,
+      </if>
+      <if test="isHide != null">
+        is_hide,
+      </if>
+      <if test="serialNumber != null">
+        serial_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="typeValue != null">
+        #{typeValue,jdbcType=VARCHAR},
+      </if>
+      <if test="typeLogo != null">
+        #{typeLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="showType != null">
+        #{showType,jdbcType=INTEGER},
+      </if>
+      <if test="isHide != null">
+        #{isHide,jdbcType=INTEGER},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sdys.appgame.entity.Type">
+    update type
+    <set>
+      <if test="typeValue != null">
+        type_value = #{typeValue,jdbcType=VARCHAR},
+      </if>
+      <if test="typeLogo != null">
+        type_logo = #{typeLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="showType != null">
+        show_type = #{showType,jdbcType=INTEGER},
+      </if>
+      <if test="isHide != null">
+        is_hide = #{isHide,jdbcType=INTEGER},
+      </if>
+      <if test="serialNumber != null">
+        serial_number = #{serialNumber,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sdys.appgame.entity.Type">
+    update type
+    set type_value = #{typeValue,jdbcType=VARCHAR},
+      type_logo = #{typeLogo,jdbcType=VARCHAR},
+      show_type = #{showType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="findTypesList" parameterType="map" resultType="map">
+   SELECT
+  type_customer_app.id as typeCustomerAppId,
+  customer_app.id as customerAppId,
+  customer_app.`type_id` as customerAppTypdId,
+  type_customer_app.type_id as typeId,
+  customer_app.`jump_name` as jumpName,
+  customer_app.`logo` as logo,
+  customer_app.`jump_app_id` as jumpAppId,
+  type_customer_app.`index_item` as indexItem
+FROM
+  type_customer_app
+  LEFT JOIN `customer_app`
+    ON type_customer_app.`customer_app_id` = customer_app.`id`
+    <where>
+      <if test="typeId != null and  typeId !=''">
+      and type_customer_app.`type_id` =  #{typeId,jdbcType=INTEGER}
+      </if>
+      and customer_app.is_hide = 1
+    </where>
+    ORDER BY type_customer_app.`index_item` ASC
+  </select>
+</mapper>
