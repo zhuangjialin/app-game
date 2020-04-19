@@ -415,8 +415,40 @@ public class DateUtils {
         return simpleDateFormat.format(date);
     }
 
+    public static String nextMonthFirstDate(String dateStr){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String nextMonthFirstDate = "";
+        try {
+            Date date = sdf.parse(dateStr);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            calendar.add(Calendar.MONTH, 1);
+            nextMonthFirstDate = sdf.format(calendar.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return nextMonthFirstDate;
+    }
 
-    public static void main(String[] args) {
-        System.out.println(DateUtils.getQuartList());
+    public static void printDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        System.out.println(sdf.format(date));
+    }
+
+
+
+
+
+    public static void main(String[] args) throws ParseException {
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+             System.out.println(df.parse("2020-04-14 12:23:39"));
+        } catch (ParseException var4) {
+            var4.printStackTrace();
+        }
+
     }
 }

@@ -199,6 +199,7 @@ public class ApiController {
             }
             result.put("code",0);
             result.put("msg","");
+            result.put("adunit",config.getUnitId());
             xcxShare.put("shareImg",this.shareImg);
             xcxShare.put("shareTitle",this.shareTitle);
             data.put("banner",customerAppService.selectBannerList());

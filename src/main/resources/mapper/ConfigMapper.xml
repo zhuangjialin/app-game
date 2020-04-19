@@ -27,7 +27,7 @@
 
   </resultMap>
   <sql id="Base_Column_List">
-    id, is_show, param1, param2, param3, param4, app_id,unit_id,description,title,is_box  </sql>
+    id, is_show, param1, param2, param3, param4, app_id,unit_id,description,title,is_box,unit_id  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
